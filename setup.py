@@ -16,6 +16,11 @@ def copy_bin(path, dir_="."):
             shutil.copy(f"{dir_}/{file}", f"{path}/{file}")
 
 
+try:
+    os.environ['PYTHONPATH'] += os.path.abspath(os.curdir)
+except KeyError:
+    os.environ['PYTHONPATH'] = os.path.abspath(os.curdir)
+
 # Compile on linux (IBM Cloud functions lithops runtime)
 subprocess.call(['sh', os.path.abspath('lithops_runtime/compile_linux_cython.sh')],
                 cwd=os.path.abspath("./lithops_runtime"))

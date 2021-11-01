@@ -18,19 +18,19 @@ are up and running before configuring MLLess.
 1. Clone MLLess' repository on your local machine:
 
 ```bash
-$ git clone https://github.com/pablogs98/MLLess
+git clone https://github.com/pablogs98/MLLess
 ```
 
 2. From the repository's root directory, install MLLess' Python dependencies:
 
 ```bash
-$ pip3 install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 3. Run MLLess' setup script to compile all Cython modules. This step **requires Docker to be installed**.
 
 ```bash
-$ python3 setup.py build_ext --inplace
+python3 setup.py build_ext --inplace
 ```
 
 ### Configuration
@@ -66,10 +66,12 @@ The datasets used for experimentation are publicly available and can be download
 
 ## Examples
 
+From a shell, make ```PYTHONPATH``` point to MLLess' root directory before running the examples.
+
 ### Running a ML training
 
-Once MLLess is configured, running a ML training job only requires the user to import the desired ML model and train it as
-follows:
+Once MLLess is configured, running a ML training job only requires the user to import the desired ML model and train it
+as follows:
 
 ```python
 from MLLess.algorithms import ProbabilisticMatrixFactorisation
@@ -122,5 +124,5 @@ print(n_minibatches)
 
 ## References
 
-Marc Sànchez-Artigas, Pablo Gimeno-Sarroca.
-MLLess: Towards Enhancing Cost Efficiency in Serverless Machine Learning Training. **ACM Middleware 2021**.
+Marc Sànchez-Artigas, Pablo Gimeno-Sarroca. MLLess: Towards Enhancing Cost Efficiency in Serverless Machine Learning
+Training. **ACM Middleware 2021**.
