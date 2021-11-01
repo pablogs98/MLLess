@@ -24,7 +24,7 @@ $ git clone https://github.com/pablogs98/MLLess
 2. From the repository's root directory, install MLLess' Python dependencies:
 
 ```bash
-$ pip install -r requirements.txt
+$ pip3 install -r requirements.txt
 ```
 
 3. Run MLLess' setup script to compile all Cython modules. This step **requires Docker to be installed**.
