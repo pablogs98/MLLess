@@ -1,0 +1,8 @@
+pika==0.13.1
+Cython==0.29.21
+numpy==1.19.5
+torch==1.8.1
+tqdm
+redis==3.5.3
+pandas==1.2.0
+lithops==2.2.16

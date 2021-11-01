@@ -1,0 +1,2 @@
+from .logistic_regression import SparseLogisticRegression
+from .logistic_regression import LogisticRegression

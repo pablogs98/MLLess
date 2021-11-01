@@ -1,0 +1,19 @@
+torch
+lithops
+# Functions requirements
+simplejson
+httplib2
+kafka_python
+lxml
+python-dateutil
+pika==0.13.1
+flask
+gevent
+ibm-cos-sdk
+redis
+requests
+pandas
+numpy
+cloudpickle
+ps-mem
+tblib

@@ -1,0 +1,3 @@
+from .logistic_regression import LogisticRegression
+from .logistic_regression import SparseLogisticRegression
+from .matrix_factorisation import ProbabilisticMatrixFactorisation
