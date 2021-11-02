@@ -119,7 +119,7 @@ systemctl restart redis-server
 
 From a shell, make ```PYTHONPATH``` point to MLLess' root directory before running the examples.
 
-### Running a ML training
+### Running a ML training job
 
 Once MLLess is configured, running a ML training job only requires the user to import the desired ML model and train it
 as follows:
@@ -159,7 +159,7 @@ the partitioned dataset's filenames must be passed as parameters. The following 
 Movielens-20M dataset.
 
 ```python
-from MLLess.utils import Preprocessing
+from MLLess.utils.preprocessing import Preprocessing
 from MLLess.utils.preprocessing import DatasetTypes
 
 dataset_type = DatasetTypes.MOVIELENS
