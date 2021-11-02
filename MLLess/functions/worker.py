@@ -44,7 +44,7 @@ def worker(ibm_cos, args):
     else:
         communicator = RabbitMQCommunicator(executor_id, worker_id, slack, rabbitmq_params)
 
-    iterator = StorageIterator(ibm_cos, bucket, dataset, worker_id, n_minibatches, seed, n_workers, dataset_path, local)
+    iterator = StorageIterator(ibm_cos, bucket, dataset, worker_id, n_minibatches, seed, n_workers, dataset_path)
     print(f'Running worker with id={worker_id}, execution={executor_id}')
 
     get_model = args.pop('model', None)
