@@ -1,4 +1,4 @@
-from MLLess.utils import Preprocessing
+from MLLess.utils.preprocessing import Preprocessing
 from MLLess.utils.preprocessing import DatasetTypes
 
 dataset_type = DatasetTypes.MOVIELENS
