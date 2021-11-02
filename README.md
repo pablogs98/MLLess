@@ -68,11 +68,13 @@ The datasets must be partitioned in batches in a particular format and uploaded 
 (see [Partitioning a dataset](#partitioning-a-dataset)).
 
 ### Setting up RabbitMQ and Redis
-This section explains how to manually set up RabbitMQ and Redis. This process is not necessary if you are using serverless RabbitMQ and Redis instances. 
+This section explains how to manually set up RabbitMQ and Redis servers. This process is not necessary if you are using serverless RabbitMQ and Redis instances. 
 
 The following guide has been tested on Ubuntu Server 20.04.
 
 #### RabbitMQ installation and configuration
+
+In the RabbitMQ server:
 
 1. Install RabbitMQ Server:
 ```bash
@@ -93,6 +95,8 @@ rabbitmqctl set_permissions -p / username ".*" ".*" ".*"
 RabbitMQ's default port is 5672 and will bind to all interfaces unless it is manually specified in RabbitMQ's configuration file.
 
 #### Redis installation and configuration
+
+In the Redis server:
 
 1. Install Redis Server:
 ```bash
