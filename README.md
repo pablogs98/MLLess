@@ -37,7 +37,7 @@ python3 setup.py build_ext --inplace
 
 1. Before proceeding,
    follow [Lithops' configuration guide](https://github.com/lithops-cloud/lithops/blob/master/config/README.md) and
-   configure a serverless compute backend and a storage backend.
+   configure the IBM Cloud Functions serverless compute backend and the IBM Cloud Object Storage backend.
 2. Add the dataset bucket name's and Redis and RabbitMQ's configuration keys to Lithops' configuration file. For MLLess
    to work, the Redis instance should not be running in _protected mode_, hence it does not require authentication.
 
@@ -63,6 +63,9 @@ The datasets used for experimentation are publicly available and can be download
 | ----------- | ----------- |
 | Logistic regression | [Criteo display advertising challenge dataset](http://labs.criteo.com/2014/02/kaggle-display-advertising-challenge-dataset/)       |
 | Probabilistic matrix factorisation   | [Movielens 10M dataset](https://grouplens.org/datasets/movielens/10m/) and [Movielens 20M dataset](https://grouplens.org/datasets/movielens/20m/)|
+
+The datasets must be partitioned in batches in a particular format and uploaded to IBM Cloud Object Storage 
+(see [Partitioning a dataset](#partitioning-a-dataset)).
 
 ## Examples
 
@@ -96,13 +99,13 @@ enabled ```significance_threshold=0.7```, which stops once the convergence thres
 generates a set of files which contain execution statistics such as the total execution time, training cost or loss and
 time per step.
 
-Before starting the training, the desired dataset must be stored in the selected storage backend.
+Before starting the training, the desired dataset must be stored in IBM Cloud Object Storage.
 
 For other examples, check out the [examples](examples) folder.
 
 ### Partitioning a dataset
 
-MLLess requires datasets to be partitioned in batches in a certain format and stored in the selected storage backend. We
+MLLess requires datasets to be partitioned in batches in a certain format and stored in IBM Cloud Object Storage. We
 provide a utility code which partitions the datasets used during our experimentation. The batch size, the separator and
 the partitioned dataset's filenames must be passed as parameters. The following example shows how to partition the
 Movielens-20M dataset.
