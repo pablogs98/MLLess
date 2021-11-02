@@ -13,9 +13,12 @@ HASH_SIZE = 10 ** 5
 # result is a list of tuples (label, list of tuples (index, value))
 # Load a CSV file
 def load_csv_sparse_tab(filename):
+    with open(filename, 'rb') as file:
+        num_lines = Preprocessing._line_count(file)
+
     progress = tqdm(total=num_lines, unit="lines",
                     bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt}')
-    with open('../../datasets/criteo/sparse_criteo.pickle', 'wb') as intermediate_file:
+    with open('criteo/sparse_criteo.pickle', 'wb') as intermediate_file:
         with open(filename, 'r') as file:
             csv_reader = reader(file, dialect="excel-tab")
             for row in csv_reader:
@@ -53,9 +56,8 @@ def dataset_minmax():
     col_values = dict()
     col_counts = dict()
     col_min_max = dict()
-    progress = tqdm(total=num_lines, unit="lines",
-                    bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt}')
-    with open('../../datasets/criteo/sparse_criteo.pickle', 'rb') as file:
+
+    with open('criteo/sparse_criteo.pickle', 'rb') as file:
         while True:
             try:
                 row = pickle.load(file)
@@ -74,7 +76,6 @@ def dataset_minmax():
                         col_values[index] = value
                         col_counts[index] = 1
                         col_min_max[index] = (value, value)
-                progress.update()
             except EOFError:
                 break
     return col_min_max
@@ -82,10 +83,8 @@ def dataset_minmax():
 
 # Rescale dataset columns to the range 0-1
 def normalize_dataset(minmax):
-    progress = tqdm(total=num_lines, unit="lines",
-                    bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt}')
-    with open('../../datasets/criteo/sparse_criteo.pickle', 'rb') as picklefile:
-        with open('../../datasets/criteo/sparse_criteo_scale.csv', 'w', newline='') as csvfile2:
+    with open('criteo/sparse_criteo.pickle', 'rb') as picklefile:
+        with open('criteo/sparse_criteo_scale.csv', 'w', newline='') as csvfile2:
             csv_writer = writer(csvfile2)
             while True:
                 try:
@@ -105,20 +104,5 @@ def normalize_dataset(minmax):
                             write_row.append(row_values[i][0])
                             write_row.append(new_value)
                     csv_writer.writerow(write_row)
-                    progress.update()
                 except EOFError:
                     break
-
-
-if __name__ == "__main__":
-    filename = '../../datasets/criteo/criteo_train.txt'
-    print("Loading dataset...")
-
-    with open(filename, 'rb') as file:
-        num_lines = Preprocessing._line_count(file)
-
-    load_csv_sparse_tab(filename)
-
-    # normalize
-    minmax = dataset_minmax()
-    normalize_dataset(minmax)
