@@ -10,8 +10,8 @@ Before installing and configuring MLLess, make sure that Python 3.8.x and Docker
 client machine. MLLess runs on Python 3.8.x, and a Docker container is required to build MLLess' Cython modules.
 
 MLLess also requires a Redis and a RabbitMQ instances to communicate the serverless functions and share intermediate
-state. These can be serverless services or dedicated servers, depending on the cloud provider. Ensure that both services
-are up and running before configuring MLLess.
+state. These can be serverless services or dedicated servers, depending on the cloud provider. 
+In case you are manually provisioning the servers, follow the configuration guide at [Setting up RabbitMQ and Redis](#setting-up-rabbitmq-and-redis). Ensure that both services are up and running before configuring MLLess.
 
 ### Client installation
 
@@ -66,6 +66,50 @@ The datasets used for experimentation are publicly available and can be download
 
 The datasets must be partitioned in batches in a particular format and uploaded to IBM Cloud Object Storage 
 (see [Partitioning a dataset](#partitioning-a-dataset)).
+
+### Setting up RabbitMQ and Redis
+This section explains how to manually set up RabbitMQ and Redis. This process is not necessary if you are using serverless RabbitMQ and Redis instances. 
+
+The following guide has been tested on Ubuntu Server 20.04.
+
+#### RabbitMQ installation and configuration
+
+1. Install RabbitMQ Server:
+```bash
+apt install rabbitmq-server 
+```
+
+2. Create a RabbitMQ user:
+```bash
+rabbitmqctl add_user username password
+```
+
+3. Set the user's role and permissions:
+```bash
+rabbitmqctl set_user_tags username administrator
+rabbitmqctl set_permissions -p / username ".*" ".*" ".*"
+```
+
+RabbitMQ's default port is 5672 and will bind to all interfaces unless it is manually specified in RabbitMQ's configuration file.
+
+#### Redis installation and configuration
+
+1. Install Redis Server:
+```bash
+apt install redis
+```
+
+2. Modify Redis' configuration file ```/etc/redis/redis.conf```. Change the following lines:
+```text
+bind 127.0.0.1 ::1   # Comment this line
+...
+protected-mode yes   # Change to protected-mode no
+```
+
+3.Restart Redis' daemon:
+```bash
+systemctl restart redis-server
+```
 
 ## Examples
 
