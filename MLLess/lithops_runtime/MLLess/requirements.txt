@@ -1,6 +1,6 @@
-Cython
+Cython==0.29.21
 scipy
-lithops
+lithops==2.2.16
 # Functions requirements
 simplejson
 httplib2
