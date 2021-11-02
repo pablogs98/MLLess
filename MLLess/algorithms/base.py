@@ -17,7 +17,7 @@ class Base:
     def __init__(self, n_workers, significance_threshold=0.0, end_threshold=0.0, remove_threshold=None,
                  remove_interval=None,
                  learning_rate=0.8, runtime_memory=2048, seed=8, slack=0, local=False, max_epochs=0, max_time=None,
-                 min_workers=None, dataset_path=None, storage_backend=None, n_redis=1):
+                 min_workers=None, dataset_path=None, storage_backend='redis', n_redis=1):
         # Function executor
         if local:
             self.fexec = lithops.LocalhostExecutor(workers=n_workers + 1, log_level='debug')
@@ -70,18 +70,13 @@ class Base:
 
         # RabbitMQ url, connection, channel
         lithops_config = self.fexec.config
-        if self.local:
-            self.rabbitmq_params = pika.URLParameters('amqp://{}:{}'.format('localhost',
-                                                                            lithops_config['rabbit_mq'][
-                                                                                'rabbitmq_port']))
-        else:
-            host = lithops_config['rabbit_mq']['rabbitmq_host']
-            port = lithops_config['rabbit_mq']['rabbitmq_port']
-            user = lithops_config['rabbit_mq']['rabbitmq_username']
-            password = lithops_config['rabbit_mq']['rabbitmq_password']
-            credentials = pika.PlainCredentials(user, password)
-            self.rabbitmq_params = pika.ConnectionParameters(host=host, port=port, credentials=credentials,
-                                                             blocked_connection_timeout=9999, heartbeat=600)
+        host = lithops_config['rabbit_mq']['rabbitmq_host']
+        port = lithops_config['rabbit_mq']['rabbitmq_port']
+        user = lithops_config['rabbit_mq']['rabbitmq_username']
+        password = lithops_config['rabbit_mq']['rabbitmq_password']
+        credentials = pika.PlainCredentials(user, password)
+        self.rabbitmq_params = pika.ConnectionParameters(host=host, port=port, credentials=credentials,
+                                                         blocked_connection_timeout=9999, heartbeat=600)
         self.connection = None
         self.channel = None
 
@@ -184,10 +179,7 @@ class Base:
                       'remove_threshold': self.remove_threshold, 'remove_interval': self.remove_interval,
                       'slack': self.slack, 'n_redis': self.n_redis, 'redis_hosts': redis_hosts}
 
-        if self.local:
-            r = StrictRedis()
-        else:
-            r = StrictRedis(host=redis_hosts[0])
+        r = StrictRedis(host=redis_hosts[0])
 
         while True:
             try:
@@ -234,13 +226,6 @@ class Base:
                                    queue="{}_client".format(self.executor_id),
                                    no_ack=False)
         self.channel.start_consuming()
-
-        import matplotlib.pyplot as plt
-
-        plt.plot(time_diff)
-        plt.show()
-
-        print(f"Total barrier time: {sum(time_diff)}")
 
     def _clean(self):
         self.fexec.clean()
