@@ -110,7 +110,7 @@ bind 127.0.0.1 ::1   # Comment this line
 protected-mode yes   # Change to protected-mode no
 ```
 
-3.Restart Redis' daemon:
+3. Restart Redis' daemon:
 ```bash
 systemctl restart redis-server
 ```
