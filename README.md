@@ -175,5 +175,12 @@ print(n_minibatches)
 
 ## References
 
-Marc Sànchez-Artigas, Pablo Gimeno-Sarroca. MLLess: Towards Enhancing Cost Efficiency in Serverless Machine Learning
-Training. **ACM Middleware 2021**.
+Marc Sànchez-Artigas, Pablo Gimeno Sarroca. [Experience paper: Towards Enhancing Cost Efficiency in Serverless Machine Learning
+Training](https://dl.acm.org/doi/10.1145/3464298.3494884). ACM Middleware '21.
+
+Pablo Gimeno Sarroca, Marc Sànchez-Artigas. [MLLess: Achieving Cost Efficiency in Serverless Machine Learning Training](https://arxiv.org/abs/2206.05786).
+
+## Acknowledgements
+<img src="https://user-images.githubusercontent.com/45240979/228180946-606cb75e-46c9-429c-a62b-ea9098c375a0.svg"  height="65">
+
+This project has received funding from the European Union's Horizon Europe (HE) Research and Innovation Programme (RIA) under Grant Agreement No. **101092646** and No. **101092644**.
