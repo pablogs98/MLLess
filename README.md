@@ -4,6 +4,8 @@ MLLess is a prototype system of a FaaS-based ML training on IBM Cloud Functions.
 of [Lithops](https://github.com/lithops-cloud/lithops), a serverless computing framework. This repository contains
 MLLess' source as well as examples and a configuration guide.
 
+<img src="https://user-images.githubusercontent.com/45240979/228190226-a76f9abd-39e9-4d4c-80d7-c282e94a062b.svg"  height="250">
+
 ## Getting started
 
 Before installing and configuring MLLess, make sure that Python 3.8.x and Docker are installed and configured on the
