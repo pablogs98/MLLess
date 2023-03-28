@@ -1,7 +1,7 @@
 import sys
 
 from benchmarks.pytorch.matrix_factorisation import MatrixFactorisation
-from benchmarks.pytorch.pytorch_execution import run
+from benchmarks.pytorch import run
 
 if __name__ == '__main__':
     n_workers = int(sys.argv[1])
@@ -32,5 +32,6 @@ if __name__ == '__main__':
     for j in range(len(n_users)):
         execution_name = f"{dataset_name[j].replace('/', '')}-mf-{n_workers}-workers-rep{i}"
         execution = MatrixFactorisation(n_users[j], n_items[j], n_features, threshold[j], epochs, execution_name,
-                                        learning_rate, num_minibatches[j], dataset_name[j], dataset_remote_bucket)
+                                        learning_rate, num_minibatches[j], dataset_name[j], dataset_remote_bucket,
+                                        gpu=True)
         run(n_workers, execution, init_rank, end_rank, address, port)

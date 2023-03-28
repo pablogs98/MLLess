@@ -11,8 +11,8 @@ from benchmarks.pytorch.sampler import Sampler
 
 class PytorchExecution:
     def __init__(self, model, optimizer, loss_func, threshold, epochs, execution_name, learning_rate, num_minibatches,
-                 dataset_name, dataset_remote_bucket, seed, write_results=True,
-                 adaptive_lr=False, max_time=None, n_threads=1, n_iters=None):
+                 dataset_name, dataset_remote_bucket, dataset_local_dir, seed, local, write_results=True,
+                 adaptive_lr=False, max_time=None, n_threads=1, n_iters=None, sample=False, gpu=False):
         self.model = model
         self.optimizer = optimizer
         self.loss_func = loss_func
@@ -24,7 +24,9 @@ class PytorchExecution:
         self.dataset_name = dataset_name
         self.rank = 0
         self.dataset_remote_bucket = dataset_remote_bucket
+        self.dataset_local_dir = dataset_local_dir
         self.seed = seed
+        self.local = local
         self.write_results = write_results
         self.adaptive_lr = adaptive_lr
         self.max_time = max_time
@@ -34,16 +36,26 @@ class PytorchExecution:
         self.sample = False
         self.step_time = []
 
+        self.gpu = gpu
+
+        if self.gpu:
+            self.device = torch.device("cuda:0")
+            self.model.to(self.device)
+
     def run(self):
         ti = time.time()
         step = 0
         under_threshold = 0
         epoch = 0
-        n_workers = dist.get_world_size()
-        torch.set_num_threads(self.n_threads)
+
+        if self.gpu:
+            n_workers = 1
+        else:
+            n_workers = dist.get_world_size()
+            torch.set_num_threads(self.n_threads)
 
         dataset = Sampler(self.dataset_remote_bucket, self.dataset_name, self.rank, self.num_minibatches, self.seed,
-                          n_workers)
+                          n_workers, self.dataset_local_dir, self.local, sample=self.sample)
 
         if self.rank == 0:
             if self.write_results:
@@ -68,13 +80,23 @@ class PytorchExecution:
             t_step = time.time()
             # Step
             samples, labels = self.get_samples_labels(minibatch)
+
+            if self.gpu:
+                samples = samples.to(self.device)
+                labels = labels.to(self.device)
+
             self.optimizer.zero_grad()
             prediction = self.model(samples)
             loss = self.loss_func(prediction, labels)
             loss.backward()
-            self.average_gradients()
+
+            if not self.gpu:
+                self.average_gradients()
+
             self.optimizer.step()
-            self.average_loss(loss)
+
+            if not self.gpu:
+                self.average_loss(loss)
 
             self.step_time.append(time.time() - t_step)
 
@@ -137,26 +159,30 @@ class PytorchExecution:
         raise NotImplementedError
 
 
-def run_distributed(n_workers, execution, init_rank, end_rank, address='127.0.0.1', port='29500', backend='gloo'):
-    processes = []
-    for rank in range(init_rank, end_rank):
-        p = Process(target=run_execution,
-                    args=(n_workers, rank, address, port, backend, execution),
-                    daemon=True)
-        processes.append(p)
-        p.start()
-    processes[0].join()
+def run(n_workers, execution, init_rank, end_rank, address='127.0.0.1', port='29500', backend='gloo'):
+    if not execution.gpu:
+        processes = []
+        for rank in range(init_rank, end_rank):
+            p = Process(target=_run_execution,
+                        args=(n_workers, rank, address, port, backend, execution),
+                        daemon=True)
+            processes.append(p)
+            p.start()
+        processes[0].join()
+    else:
+        _run_execution(1, 0, address, port, backend, execution)
 
 
-def run_execution(n_workers, rank, address, port, backend, execution):
-    print(f"Running worker {rank}! Trying to connect to master @ {address}:{port}...")
-    os.environ['MASTER_ADDR'] = address
-    os.environ['MASTER_PORT'] = port
-    os.environ["OMP_NUM_THREADS"] = "1"
-    os.environ["OPENBLAS_NUM_THREADS"] = "1"
-    os.environ["MKL_NUM_THREADS"] = "1"
-    os.environ["VECLIB_MAXIMUM_THREADS"] = "1"
-    os.environ["NUMEXPR_NUM_THREADS"] = "1"
-    dist.init_process_group(backend, rank=rank, world_size=n_workers)
+def _run_execution(n_workers, rank, address, port, backend, execution):
+    if not execution.gpu:
+        print(f"Running worker {rank}! Trying to connect to master @ {address}:{port}...")
+        os.environ['MASTER_ADDR'] = address
+        os.environ['MASTER_PORT'] = port
+        os.environ["OMP_NUM_THREADS"] = "1"
+        os.environ["OPENBLAS_NUM_THREADS"] = "1"
+        os.environ["MKL_NUM_THREADS"] = "1"
+        os.environ["VECLIB_MAXIMUM_THREADS"] = "1"
+        os.environ["NUMEXPR_NUM_THREADS"] = "1"
+        dist.init_process_group(backend, rank=rank, world_size=n_workers)
     execution.rank = rank
     execution.run()

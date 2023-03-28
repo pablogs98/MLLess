@@ -1,7 +1,7 @@
 import sys
 
 from benchmarks.pytorch.logistic_regression import SparseLogisticRegression
-from benchmarks.pytorch import run_distributed
+from benchmarks.pytorch.pytorch_execution import run
 
 if __name__ == '__main__':
     n_workers = int(sys.argv[1])
@@ -31,4 +31,4 @@ if __name__ == '__main__':
     execution = SparseLogisticRegression(n_features, reg_param, threshold, epochs, execution_name, learning_rate,
                                          num_minibatches, dataset_name, biased, dataset_remote_bucket,
                                          max_time=500, sample=True)
-    run_distributed(n_workers, execution, init_rank, end_rank, address, port)
+    run(n_workers, execution, init_rank, end_rank, address, port)

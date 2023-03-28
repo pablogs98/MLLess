@@ -8,8 +8,8 @@ from benchmarks.pytorch.pytorch_execution import PytorchExecution
 
 class LogisticRegression(PytorchExecution):
     def __init__(self, n_features, reg_param, threshold, epochs, execution_name, learning_rate, num_minibatches,
-                 dataset_name, bias=True, dataset_remote_bucket=None, seed=8, write_results=True, model=None,
-                 sample=False, max_time=None):
+                 dataset_name, bias=True, dataset_remote_bucket=None, dataset_local_dir=None, seed=8, local=False,
+                 write_results=True, model=None, sample=False, max_time=None, gpu=False):
         torch.manual_seed(seed)
         self.n_features = n_features
 
@@ -19,8 +19,8 @@ class LogisticRegression(PytorchExecution):
         loss_func = BCELoss()
         print(sample)
         super().__init__(model, optimizer, loss_func, threshold, epochs, execution_name, learning_rate, num_minibatches,
-                         dataset_name, dataset_remote_bucket, seed, write_results, sample,
-                         max_time=max_time)
+                         dataset_name, dataset_remote_bucket, dataset_local_dir, seed, local, write_results, sample,
+                         max_time=max_time, gpu=gpu)
 
     def get_samples_labels(self, minibatch):
         samples_numpy = minibatch[:, 0:minibatch.shape[1] - 1]
