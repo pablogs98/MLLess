@@ -16,11 +16,11 @@ if __name__ == '__main__':
         address = '127.0.0.1'
         port = '29500'
 
-    n_users = [69878, 138493]
-    n_items = [10681, 27278]
-    num_minibatches = [1600, 1666]
-    dataset_name = ['movielens/movielens-10m-6250', 'movielens/movielens-20m-12000']
-    threshold = [0.74, 0.76]
+    n_users = [69878]
+    n_items = [10681]
+    num_minibatches = [1600]
+    dataset_name = ['movielens/movielens-10m-6250']
+    threshold = [0.74]
 
     n_features = 20
     epochs = 20
