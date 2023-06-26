@@ -55,7 +55,7 @@ class PytorchExecution:
             torch.set_num_threads(self.n_threads)
 
         dataset = Sampler(self.dataset_remote_bucket, self.dataset_name, self.rank, self.num_minibatches, self.seed,
-                          n_workers, self.dataset_local_dir, self.local, sample=self.sample)
+                          n_workers)
 
         if self.rank == 0:
             if self.write_results:
