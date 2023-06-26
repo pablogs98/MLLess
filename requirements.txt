@@ -7,3 +7,4 @@ redis==3.5.3
 pandas==1.2.0
 lithops==2.2.16
 mmh3
+scikit-learn
