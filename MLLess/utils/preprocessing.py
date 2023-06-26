@@ -34,12 +34,15 @@ class Preprocessing:
 
     # minibatch_size can't be greater than lines / n_workers
 
-    def partition(self, minibatch_size, key, compress=True, scale=True):
+    def partition(self, minibatch_size, key, dataset_mean=None, compress=True, scale=True):
         if not self.has_class:
-            df = pandas.read_csv(self.dataset_path, sep=self.separator, header=None)
-            dataset_mean = np.float64(df.iloc[:, 2].mean())
-            df = df.sample(frac=1)
-            df.to_csv("shuffle.csv", header=None, index=False, columns=[0, 1, 2])
+            if not os.path.isfile("shuffle.csv") or dataset_mean is None:
+                df = pandas.read_csv(self.dataset_path, sep=self.separator, header=None, usecols=[i for i in range(3)])
+                dataset_mean = np.float64(df.iloc[:, 2].mean())
+                df = df.sample(frac=1)
+                df.to_csv("shuffle.csv", header=None, index=False, columns=[0, 1, 2])
+            else:
+                print("Found shuffle.csv")
             self.separator = ','
         else:
             if self.sparse:
